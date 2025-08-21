@@ -1,0 +1,7 @@
+transformers>=4.42
+datasets>=2.20
+torch>=2.1
+numpy>=1.24
+sentencepiece>=0.1.99
+protobuf>=4.23
+speechbrain>=1.0.0
