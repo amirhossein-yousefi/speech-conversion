@@ -128,6 +128,7 @@ def main():
         from transformers import SpeechT5HifiGan
         ex = eval_proc[0]
         vocoder = SpeechT5HifiGan.from_pretrained("microsoft/speecht5_hifigan")
+        vocoder.to(device)
         with torch.no_grad():
             inp = torch.tensor(ex["input_values"], dtype=torch.float32).unsqueeze(0).to(device)
             spk = torch.tensor(ex["speaker_embeddings"], dtype=torch.float32).unsqueeze(0).to(device)
@@ -136,6 +137,7 @@ def main():
         os.makedirs(args.output_dir, exist_ok=True)
         import soundfile as sf
         sf.write(os.path.join(args.output_dir, "sample_converted.wav"), speech.cpu().numpy(), 16000)
+        sf.write(os.path.join(args.output_dir, "sample_orig.wav"), ex["input_values"], 16000)
         print(f"[OK] Wrote {os.path.join(args.output_dir, 'sample_converted.wav')}")
     except Exception as e:
         print(f"[WARN] Inference smoke test skipped: {e}")
