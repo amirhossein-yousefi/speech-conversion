@@ -5,6 +5,17 @@
 
 ---
 
+## 🚀 Model on Hugging Face
+
+[![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-Speech--Conversion-yellow.svg)](https://huggingface.co/Amirhossein75/Emotion-Aware-TTS-Style-Transfer)
+
+<p align="center">
+  <a href="https://huggingface.co/Amirhossein75/Speech-Conversion">
+    <img src="https://img.shields.io/badge/🤗%20View%20on%20Hugging%20Face-blueviolet?style=for-the-badge" alt="Hugging Face Repo">
+  </a>
+</p>
+
+---
 ## Table of contents
 
 - [Overview](#overview)
