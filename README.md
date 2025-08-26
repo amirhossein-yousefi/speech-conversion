@@ -7,7 +7,7 @@
 
 ## 🚀 Model on Hugging Face
 
-[![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-Speech--Conversion-yellow.svg)](https://huggingface.co/Amirhossein75/Emotion-Aware-TTS-Style-Transfer)
+[![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-Speech--Conversion-yellow.svg)](https://huggingface.co/Amirhossein75/Speech-Conversion)
 
 <p align="center">
   <a href="https://huggingface.co/Amirhossein75/Speech-Conversion">
@@ -198,6 +198,48 @@ By default, the script uses the [CMU ARCTIC dataset](http://festvox.org/cmu_arct
 **Outputs**
 - A standard Hugging Face model folder in `--output_dir` (config + weights + tokenizer files).
 - Use this folder as `--checkpoint` in the local demos.
+
+
+## ⚙️ Training & Data Hyperparameters (SpeechT5 VC)
+| **Category**           | **Parameter**                 | **Default / Value**         | **Description**                                                                |
+| ---------------------- | ----------------------------- | --------------------------- | ------------------------------------------------------------------------------ |
+| **Model**              | `processor`                   | `microsoft/speecht5_vc`     | Pretrained processor checkpoint                                                |
+|                        | `model`                       | `microsoft/speecht5_vc`     | Base SpeechT5 S2S VC model                                                     |
+|                        | `use_cache`                   | `False`                     | `model.config.use_cache = False`                                               |
+| **Dataset**            | `dataset_name`                | `cmu_arctic`                | `cmu_arctic` or use CSV manifests                                              |
+|                        | `src_spk`                     | `awb`                       | Source speaker (CMU ARCTIC ID)                                                 |
+|                        | `tgt_spk`                     | `clb`                       | Target speaker (CMU ARCTIC ID)                                                 |
+|                        | `val_ratio`                   | `0.05`                      | Validation split ratio (when auto-splitting)                                   |
+|                        | `max_train_pairs`             | `None`                      | Cap on training pairs (optional)                                               |
+|                        | `train_csv`                   | `None`                      | Path to training manifest (non-ARCTIC)                                         |
+|                        | `eval_csv`                    | `None`                      | Path to eval manifest (optional)                                               |
+| **Speaker Embeddings** | `use_precomputed_xvectors`    | `True`                      | Try precomputed x-vectors for ARCTIC (fallback to runtime embedder if missing) |
+|                        | `xvector_mode`                | `average`                   | `{average, utterance}`; how to use x-vectors                                   |
+|                        | `embedder`                    | SpeechBrain (runtime)       | Built via `build_speaker_embedder` if no precomputed x-vectors                 |
+| **Output**             | `output_dir`                  | `outputs/speecht5_vc_ft`    | Checkpoints & artifacts path                                                   |
+| **Schedule**           | `max_steps`                   | `2000`                      | Total training steps (step-based training)                                     |
+| **Batching**           | `per_device_train_batch_size` | `2`                         | Per-device train batch size                                                    |
+|                        | `per_device_eval_batch_size`  | `1`                         | Per-device eval batch size                                                     |
+|                        | `grad_accum`                  | `8`                         | Gradient accumulation steps                                                    |
+| **Optimization**       | `lr`                          | `1e-5`                      | Learning rate                                                                  |
+|                        | `warmup_steps`                | `500`                       | Linear warmup steps                                                            |
+| **Precision**          | `fp16`                        | `False`                     | Enable with `--fp16`                                                           |
+|                        | `bf16`                        | `False`                     | Enable with `--bf16` (Ampere+)                                                 |
+| **Trainer Args**       | `evaluation_strategy`         | `steps`                     | Step-based evaluation                                                          |
+|                        | `eval_steps`                  | `1000`                      | Evaluate every N steps                                                         |
+|                        | `save_steps`                  | `1000`                      | Save checkpoint every N steps                                                  |
+|                        | `save_total_limit`            | `2`                         | Keep most recent N checkpoints                                                 |
+|                        | `gradient_checkpointing`      | `False`                     | Disabled                                                                       |
+|                        | `remove_unused_columns`       | `False`                     | Keep custom fields for collator                                                |
+|                        | `label_names`                 | `["labels"]`                | Labels key for Trainer                                                         |
+|                        | `load_best_model_at_end`      | `True`                      | Restore best checkpoint at end                                                 |
+|                        | `greater_is_better`           | `False`                     | Minimization objective (uses eval loss unless overridden)                      |
+| **Logging**            | `logging_steps`               | `25`                        | Log every N steps                                                              |
+|                        | `report_to`                   | `["tensorboard"]`           | Logging backend                                                                |
+|                        | `logging_dir`                 | `logs/training-logs`        | TensorBoard log directory                                                      |
+| **Data Pipeline**      | `prepare_fn`                  | custom                      | Packs inputs + speaker embeds (x-vectors or runtime)                           |
+|                        | `data_collator`               | `VCDataCollatorWithPadding` | Pads batches for SpeechT5 VC                                                   |
+| **Seed**               | `seed`                        | `42`                        | Global RNG seed                                                                |
 
 
 ## 🖥️ Training Hardware & Environment
